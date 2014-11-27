@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HC14' - iPad</title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+    
+    <div>
+    
+        <input type="text" name="tID" id="tID" />
+        
+        <p><button onclick="assignTbl();">ASSIGN THE TABLE</button></p>
+        
+    </div>
+    
+    <div>
+    
+        <textarea id="q"></textarea>
+        
+        <p><button onclick="sendQ();">SEND</button></p>
+        
+    </div>
+    
+  <script src="js/libs/jquery.min.js"></script>
+    
+    <script src="js/scripts.js"></script>
+
+    <script>
+    
+        function assignTbl()
+        {
+            var tID = $("#tID").val();
+            
+            if ( $.trim(tID) != '' )
+            {
+                $.post( window.API_PATH, { r: "json", a: "ASSIGN_tID", tID: tID, deviceID: window.deviceID }, function( opJSONObj ) {
+                  
+                    console.log( opJSONObj );
+                    
+                    if ( opJSONObj.action == 'success' )
+                    {
+                        window.tID = tID;
+                        alert('assigned.');
+                    }
+                  
+                }, "json");
+            }
+            else
+            {
+                alert('no assigned table ID');
+            }
+        }
+        
+        function sendQ()
+        {
+            var q = $("#q").val();
+            
+            if ( $.trim(q) != '' )
+            {   
+                $.post( window.API_PATH, { r: "json", a: "POST_Q", tID: window.tID, q: q }, function( opJSONObj ) {
+                  
+                    console.log( opJSONObj );
+                    
+                    if ( opJSONObj.action == 'success' )
+                    {
+                        alert('posted.');
+                    }
+                  
+                }, "json");
+            }
+            else
+            {
+                alert('no question to send!!!');
+            }
+        }
+        
+    </script>
+    
+</body>
+</html>
