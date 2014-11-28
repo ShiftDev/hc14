@@ -162,6 +162,36 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
             $data['action'] = 'success';
             
         } # SEND_OPMSG
+        
+        if ( $_REQUEST['a'] == 'GET_SCRMSGS' )
+        {
+            # get DATA from DB
+            $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '2' ) LIMIT 1";
+            $res = mysql_query( $sql );
+            $num_rows = mysql_num_rows( $res );
+            
+            if ( $num_rows > 0 )
+            {
+                while ( $row = mysql_fetch_array( $res ) )
+                {
+                    $id = $row['id'];
+                    
+                    $data['msg']['id'] = $id;
+                    $data['msg']['table_id'] = $row['table_id'];
+                    $data['msg']['q'] = $row['q'];
+                    $data['msg']['a'] = $row['a'];
+                    $data['msg']['timestamp'] = $row['timestamp'];
+                    
+                    //change MSG status
+                    //setMSGStatus( $id, '3' );
+                }
+                
+                $data['data'] = TRUE;
+            }
+            
+            $data['action'] = 'success';
+            
+        } # GET_SCRMSGS
     }
     
     # header status

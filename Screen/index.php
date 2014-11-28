@@ -1,3 +1,4 @@
+<?php require_once( '../inc/DB.inc.php' ); ?>
 <!DOCTYPE html>
 <html lang="">
 <head>
@@ -9,22 +10,60 @@
 
 <body>
     
-    <div id="dashboard">
+    <div id="screen">
     
-        <!-- {dashboard.php} -->
+        <div id="msg">
         
-    </div> <!--/dashboard-->
+            <?php
+                $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '2' ) LIMIT 1";
+                $res = mysql_query( $sql );
+                $num_rows = mysql_num_rows( $res );
+
+                if ( $num_rows > 0 )
+                {
+                    while( $row = mysql_fetch_array( $res ) )
+                    {
+                        print $row['q'];
+                    }
+                }
+            ?>
+            
+        </div> <!--/msg-->
+        
+    </div> <!--/screen-->
     
   <script src="js/libs/jquery.min.js"></script>
+    
+    <script src="js/scripts.js"></script>
     
     <script>
     
         setInterval(function(){
             
-            $("#dashboard").load('screen.php');
+            getSCRMsgs();
             
         }, 1000);
+        
+        function getSCRMsgs()
+        {
+            $.post( window.API_PATH, { r: "json", a: "GET_SCRMSGS" }, function( opJSONObj ) {
+                
+                console.log( opJSONObj );
+                
+                if ( opJSONObj.action == 'success' )
+                {
+                    if ( opJSONObj.data )
+                    {
+                        var msgHtml = opJSONObj.msg.q;
+                        
+                        $("#msg").html( msgHtml );
+                    }
+                }
+                
+            }, "json");
+        }
         
     </script>
 </body>
 </html>
+<?php mysql_close( $connection ); ?>
