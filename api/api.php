@@ -118,12 +118,9 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
         } # ASSIGN_tID
         
         if ( $_REQUEST['a'] == 'GET_OPMSGS' )
-        {
-            # read POST data
-            $s = $_REQUEST['s'];
-            
+        {   
             # get DATA from DB
-            $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '$s' )";
+            $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '0' )";
             $res = mysql_query( $sql );
             $num_rows = mysql_num_rows( $res );
             

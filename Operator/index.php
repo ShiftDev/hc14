@@ -1,3 +1,4 @@
+<?php require_once( '../inc/DB.inc.php' ); ?>
 <!DOCTYPE html>
 <html lang="">
 <head>
@@ -14,6 +15,20 @@
         <table id="tbl-msgs">
     
             <tr> <th>#</th> <th>TABLE ID</th> <th>Q</th> <th>A</th> <th>TIMESTAMP</th> <th>&nbsp;</th> </tr>
+            
+            <?php
+                $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '1' )";
+                $res = mysql_query( $sql );
+                $num_rows = mysql_num_rows( $res );
+
+                if ( $num_rows > 0 )
+                {
+                    while( $row = mysql_fetch_array( $res ) )
+                    {
+                        print '<tr> <td>'.$row['id'].'</td> <td>'.$row['table_id'].'</td> <td>'.$row['q'].'</td> <td>'.$row['a'].'</td> <td>'.$row['timestamp'].'</td> <td onclick="sendMSG( this, '.$row['id'].' );">SEND</td> </tr>';
+                    }
+                }
+            ?>
     
         </table>
         
@@ -27,14 +42,13 @@
     
         setInterval(function(){
             
-            //$("#dashboard").load('dashboard.php');
-            getMsgs( '0' );
+            getOpMsgs();
             
         }, 1000);
         
-        function getMsgs( s )
+        function getOpMsgs()
         {
-            $.post( window.API_PATH, { r: "json", a: "GET_OPMSGS", s: s }, function( opJSONObj ) {
+            $.post( window.API_PATH, { r: "json", a: "GET_OPMSGS" }, function( opJSONObj ) {
                   
                 console.log( opJSONObj );
 
@@ -73,3 +87,4 @@
     </script>
 </body>
 </html>
+<?php mysql_close( $connection ); ?>
