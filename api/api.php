@@ -10,6 +10,13 @@ $timestamp = strtotime(date("Y-m-d H:i:s"));
 
 require_once( '../inc/DB.inc.php' );
 
+# Custom-functions
+function setMSGStatus( $id, $s )
+{
+    $innerSql = "UPDATE `tbl_qna` SET `status` = '$s' WHERE `id` = '$id';";
+    mysql_query( $innerSql );
+}
+
 # status
 $status = array(  
     100 => 'Continue',
@@ -64,6 +71,7 @@ header("Access-Control-Allow-Methods: *");
 # respond inits
 $data['validToken'] = FALSE;
 $data['action'] = 'fail';
+$data['data'] = FALSE;
 $data['requestTimestamp'] = $timestamp;
 
 # [JSON]
@@ -85,6 +93,7 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
             
             # submit DATA to DB
             $sql = "INSERT INTO `tbl_qna` (`id`, `table_id`, `q`, `a`, `timestamp`, `status`) VALUES (NULL, '$tID', '$q', '', '$timestamp', '0');";
+            
             if ( mysql_query( $sql ) )
             {
                 $data['action'] = 'success';
@@ -107,6 +116,55 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
             }
             
         } # ASSIGN_tID
+        
+        if ( $_REQUEST['a'] == 'GET_OPMSGS' )
+        {
+            # read POST data
+            $s = $_REQUEST['s'];
+            
+            # get DATA from DB
+            $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '$s' )";
+            $res = mysql_query( $sql );
+            $num_rows = mysql_num_rows( $res );
+            
+            if ( $num_rows > 0 )
+            {
+                $i=0;
+
+                while ( $row = mysql_fetch_array( $res ) )
+                {
+                    $id = $row['id'];
+                    
+                    $data['msgs'][$i]['id'] = $id;
+                    $data['msgs'][$i]['table_id'] = $row['table_id'];
+                    $data['msgs'][$i]['q'] = $row['q'];
+                    $data['msgs'][$i]['a'] = $row['a'];
+                    $data['msgs'][$i]['timestamp'] = date("Y-m-d H:i:s",$row['timestamp']);
+                    
+                    //change MSG status
+                    setMSGStatus( $id, '1' );
+
+                    $i++;
+                }
+                
+                $data['data'] = TRUE;
+            }
+            
+            $data['action'] = 'success';
+            
+        } # GET_OPMSGS
+        
+        if ( $_REQUEST['a'] == 'SEND_OPMSGS' )
+        {
+            # read POST data
+            $id = $_REQUEST['id'];
+            
+            //change MSG status
+            setMSGStatus( $id, '2' );
+            
+            $data['action'] = 'success';
+            
+        } # SEND_OPMSG
     }
     
     # header status
