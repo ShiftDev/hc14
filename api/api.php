@@ -17,6 +17,20 @@ function setMSGStatus( $id, $s )
     mysql_query( $innerSql );
 }
 
+function setOpStatus( $id, $s )
+{
+    $innerSql = "UPDATE `tbl_qna` SET `opscreen` = '$s' WHERE `id` = '$id';";
+    mysql_query( $innerSql );
+}
+
+function setScreenStatus( $id, $s )
+{
+    $innerSql = "UPDATE `tbl_qna` SET `onscreen` = '0'";
+    mysql_query( $innerSql );
+    $innerSql = "UPDATE `tbl_qna` SET `onscreen` = '$s' WHERE `id` = '$id';";
+    mysql_query( $innerSql );
+}
+
 # status
 $status = array(  
     100 => 'Continue',
@@ -120,7 +134,7 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
         if ( $_REQUEST['a'] == 'GET_OPMSGS' )
         {   
             # get DATA from DB
-            $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '0' )";
+            $sql = "SELECT * FROM `tbl_qna` WHERE ( opscreen = '0' )";
             $res = mysql_query( $sql );
             $num_rows = mysql_num_rows( $res );
             
@@ -140,7 +154,8 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
                     $data['msgs'][$i]['timestamp'] = date("Y-m-d H:i:s",$row['timestamp']);
                     
                     //change MSG status
-                    setMSGStatus( $id, '1' );
+                    //setMSGStatus( $id, '1' );
+                    setOpStatus( $id, '1' );
 
                     $i++;
                 }
@@ -167,7 +182,7 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
         if ( $_REQUEST['a'] == 'GET_SCRMSGS' )
         {
             # get DATA from DB
-            $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '2' ) LIMIT 1";
+            $sql = "SELECT * FROM `tbl_qna` WHERE ( onscreen = '1' ) LIMIT 1";
             $res = mysql_query( $sql );
             $num_rows = mysql_num_rows( $res );
             
@@ -200,6 +215,17 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
         # read POST data
         $id = $_REQUEST['id'];
         $val = $_REQUEST['val'];
+        
+        if ( $val == '2' )
+        {
+            setScreenStatus( $id, '1' );
+        }
+        
+        if (  $val == '3' )
+        {
+            setScreenStatus( $id, '0' );
+            $val = (int) $val - 2;
+        }
         
         //change MSG status
         setMSGStatus( $id, $val );

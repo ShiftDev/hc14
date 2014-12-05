@@ -15,7 +15,7 @@
         <div id="msg">
         
             <?php
-                $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '2' ) LIMIT 1";
+                $sql = "SELECT * FROM `tbl_qna` WHERE ( onscreen = '1' ) LIMIT 1";
                 $res = mysql_query( $sql );
                 $num_rows = mysql_num_rows( $res );
 
@@ -58,6 +58,11 @@
                         
                         $("#msg").html( msgHtml );
                     }
+                    else
+                    {
+                        $("#msg").html( 'NO QUESTIONS' );
+                    }
+                    
                 }
                 
             }, "json");
