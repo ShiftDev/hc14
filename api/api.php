@@ -195,6 +195,19 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
         } # GET_SCRMSGS
     }
     
+    if ( $_REQUEST['a'] == 'OPT_CHANGE' )
+    {
+        # read POST data
+        $id = $_REQUEST['id'];
+        $val = $_REQUEST['val'];
+        
+        //change MSG status
+        setMSGStatus( $id, $val );
+
+        $data['action'] = 'success';
+        
+    } # OPT_CHANGE
+        
     # header status
     $data['status'] = $status[$data['statusCode']];
     
