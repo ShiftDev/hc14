@@ -17,7 +17,11 @@
             <tr> <th>#</th> <th>TABLE ID</th> <th>Q</th> <th>A</th> <th>TIMESTAMP</th> <th>&nbsp;</th> </tr>
             
             <?php
-                $sql = "SELECT * FROM `tbl_qna` WHERE ( status = '1' )";
+
+                $statusArray = array( 'Pending', 'Approved', 'Send', 'Revoke' );
+
+                //$sql = "SELECT * FROM `tbl_qna` WHERE ( status = '1' )";
+                $sql = "SELECT * FROM `tbl_qna` ORDER BY status ASC";
                 $res = mysql_query( $sql );
                 $num_rows = mysql_num_rows( $res );
 
@@ -25,7 +29,7 @@
                 {
                     while( $row = mysql_fetch_array( $res ) )
                     {
-                        print '<tr> <td>'.$row['id'].'</td> <td>'.$row['table_id'].'</td> <td>'.$row['q'].'</td> <td>'.$row['a'].'</td> <td>'.$row['timestamp'].'</td> <td onclick="sendMSG( this, '.$row['id'].' );">SEND</td> </tr>';
+                        print '<tr> <td>'.$row['id'].'</td> <td>'.$row['table_id'].'</td> <td>'.$row['q'].'</td> <td>'.$row['a'].'</td> <td>'.date("Y-m-d H:i:s",$row['timestamp']).'</td> <td>'.$row['status'].'</td> <td onclick="sendMSG( this, '.$row['id'].' );">SEND</td> </tr>';
                     }
                 }
             ?>
@@ -58,7 +62,7 @@
                     {
                         for ( var i=0; i<opJSONObj.msgs.length; i++ )
                         {
-                            var tblRow = '<tr id="tr-'+opJSONObj.msgs[i].id+'"> <td>'+opJSONObj.msgs[i].id+'</td> <td>'+opJSONObj.msgs[i].table_id+'</td> <td>'+opJSONObj.msgs[i].q+'</td> <td>'+opJSONObj.msgs[i].a+'</td> <td>'+opJSONObj.msgs[i].timestamp+'</td> <td onclick="sendMSG( this, '+opJSONObj.msgs[i].id+');">SEND</td> </tr>';
+                            var tblRow = '<tr id="tr-'+opJSONObj.msgs[i].id+'"> <td>'+opJSONObj.msgs[i].id+'</td> <td>'+opJSONObj.msgs[i].table_id+'</td> <td>'+opJSONObj.msgs[i].q+'</td> <td>'+opJSONObj.msgs[i].a+'</td> <td>'+opJSONObj.msgs[i].timestamp+'</td> <td>'+opJSONObj.msgs[i].status+'</td> <td onclick="sendMSG( this, '+opJSONObj.msgs[i].id+');">SEND</td> </tr>';
                             
                             $("table#tbl-msgs").append( tblRow );
                             

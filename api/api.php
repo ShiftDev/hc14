@@ -136,6 +136,7 @@ if ( (isset( $_REQUEST['r'] )) && ( $_REQUEST['r'] == 'json' ) )
                     $data['msgs'][$i]['table_id'] = $row['table_id'];
                     $data['msgs'][$i]['q'] = $row['q'];
                     $data['msgs'][$i]['a'] = $row['a'];
+                    $data['msgs'][$i]['status'] = $row['status'];
                     $data['msgs'][$i]['timestamp'] = date("Y-m-d H:i:s",$row['timestamp']);
                     
                     //change MSG status

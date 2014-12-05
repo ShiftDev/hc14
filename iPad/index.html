@@ -11,14 +11,6 @@
     
     <div>
     
-        <input type="text" name="tID" id="tID" />
-        
-        <p><button onclick="assignTbl();">ASSIGN THE TABLE</button></p>
-        
-    </div>
-    
-    <div>
-    
         <textarea id="q"></textarea>
         
         <p><button onclick="sendQ();">SEND</button></p>
@@ -30,10 +22,27 @@
     <script src="js/scripts.js"></script>
 
     <script>
-    
-        function assignTbl()
+        
+        $(document).ready( function ()
         {
-            var tID = $("#tID").val();
+            var tblNumber = prompt("Please enter the Table number?");
+
+            if (tblNumber != null) {
+                
+                var tID = tblNumber;
+                assignTbl( tID );
+                
+            }
+            else
+            {
+                alert( 'You must enter the Table Number!!' );
+            }
+            
+        });
+    
+        function assignTbl( tID )
+        {
+            var tID = tID;
             
             if ( $.trim(tID) != '' )
             {
